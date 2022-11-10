@@ -5,7 +5,6 @@
 #ifndef JNP3_MONEYBAG_H
 #define JNP3_MONEYBAG_H
 #include <cstdint>
-#include <vector>
 #include <ostream>
 
 
