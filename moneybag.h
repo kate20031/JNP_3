@@ -1,96 +1,92 @@
-//
-// Created by acer on 09.11.22.
-//
-
 #ifndef JNP3_MONEYBAG_H
 #define JNP3_MONEYBAG_H
 #include <cstdint>
 #include <ostream>
 
-
-class Solidus {
-    using coin_number_t =  unsigned long long;
-
-    public:
-        coin_number_t solidus_num;
-
-        explicit Solidus(const coin_number_t coins)
-                : solidus_num(coins) {
-        }
-};
-
-class Denier {
-    using coin_number_t =  unsigned long long;
-
-    public:
-        coin_number_t denier_num;
-
-        explicit Denier(const coin_number_t coins)
-                : denier_num(coins) {
-        }
-};
-
-class Livre {
-    using coin_number_t =  unsigned long long;
-
-    public:
-        coin_number_t livre_num;
-
-        explicit Livre(const coin_number_t coins)
-            : livre_num(coins) {
-        }
-};
-
 class Moneybag {
 
-    public:
-        using coin_number_t =  unsigned long long;
+  public:
+    using coin_number_t = unsigned long;
 
-        //constructors
-        explicit Moneybag(const coin_number_t liv, const coin_number_t sol
-                          , const coin_number_t den)
-                          : livre(liv), solidus(sol), denier(den) {
-        }
+    // constructors
+    explicit constexpr Moneybag(const coin_number_t liv,
+                                const coin_number_t sol,
+                                const coin_number_t den)
+        : livre(liv), solidus(sol), denier(den) {}
 
-        // TODO Konstruktor do livre, solidus, denier ???
-        Moneybag(const class Moneybag &mb)
-                : livre(mb.livre), solidus(mb.solidus), denier(mb.denier){
-        }
+    Moneybag(const class Moneybag &mb)
+        : livre(mb.livre), solidus(mb.solidus), denier(mb.denier) {}
 
-        //methods
+    // methods
 
-        [[nodiscard]] coin_number_t livre_number() const;
+    [[nodiscard]] coin_number_t livre_number() const;
 
-        [[nodiscard]] coin_number_t solidus_number () const;
+    [[nodiscard]] coin_number_t solidus_number() const;
 
-        [[nodiscard]] coin_number_t denier_number() const;
+    [[nodiscard]] coin_number_t denier_number() const;
 
-        Moneybag operator+(const Moneybag &mb) const;
+    friend std::ostream &operator<<(std::ostream &stream, const Moneybag &lhs);
 
-        friend std::ostream &operator<<(std::ostream &stream, const Moneybag &lhs);
+    // operators
 
-        //operators
+    explicit operator bool() const;
 
-        explicit operator bool() const;
-        
-        friend bool operator==(const Moneybag &a, const Moneybag &b);
+    friend bool operator==(const Moneybag &a, const Moneybag &b);
 
-        friend bool operator<(const Moneybag &a, const Moneybag &b);
+    friend bool operator<(const Moneybag &a, const Moneybag &b);
 
-        friend bool operator<=(const Moneybag &a, const Moneybag &b);
-        
-        friend bool operator>(const Moneybag &a, const Moneybag &b);
-        
-        friend bool operator>=(const Moneybag &a, const Moneybag &b);
+    friend bool operator<=(const Moneybag &a, const Moneybag &b);
 
-    private:
-         Livre livre;
+    friend bool operator>(const Moneybag &a, const Moneybag &b);
 
-         Solidus solidus;
+    friend bool operator>=(const Moneybag &a, const Moneybag &b);
 
-         Denier denier;
+    friend Moneybag operator*(const Moneybag &mb,
+                              Moneybag::coin_number_t scalar);
 
-         static coin_number_t all_coins_in_den_number(const Moneybag &mb) ;
+    friend Moneybag operator*(Moneybag::coin_number_t scalar,
+                              const Moneybag &mb);
+
+    friend Moneybag operator+(const Moneybag &a, const Moneybag &b);
+
+    friend Moneybag operator-(const Moneybag &a, const Moneybag &b);
+
+    friend Moneybag &operator+=(Moneybag &a, const Moneybag &b);
+
+  private:
+    coin_number_t livre, solidus, denier;
 };
 
-#endif //JNP3_MONEYBAG_H
+constexpr Moneybag Livre(1, 0, 0);
+constexpr Moneybag Solidus(0, 1, 0);
+constexpr Moneybag Denier(0, 0, 1);
+
+class Value {
+
+  public:
+    using coin_number_t = Moneybag::coin_number_t;
+
+    Value() : livre(0), solidus(0), denier(0) {}
+
+    Value(const Moneybag &mb)
+        : livre(mb.livre_number()), solidus(mb.solidus_number()),
+          denier(mb.denier_number()) {
+        normalize();
+    }
+
+    Value(coin_number_t denier_number) : livre(0), solidus(0), denier(denier_number) {
+        normalize();
+    }
+
+    Value(const class Value &v)
+        : livre(v.livre), solidus(v.solidus), denier(v.denier) {}
+
+    auto operator<=>(const Value &) const = default;
+
+  private:
+    coin_number_t livre, solidus, denier;
+
+    void normalize();
+};
+
+#endif // JNP3_MONEYBAG_H

@@ -1,0 +1,8 @@
+.vscode
+CMakeFiles
+CMakeCache.txt
+moneybag_example.cc
+*.txt
+*.o
+rational.cc
+example
