@@ -16,17 +16,9 @@ coin_number_t Moneybag::denier_number() const {
     return denier;
 }
 
-std::string printMoneybag(const Moneybag &mb) {
-    return "(" + std::to_string(mb.livre_number()) + " livres, " +
-            std::to_string(mb.solidus_number()) + " soliduses, " +
-            std::to_string(mb.denier_number()) + " deniers)";
-}
-
-void errorReport(const std::string &operation, const std::string a,
-                 const std::string b) {
+void errorReport(const std::string &operation) {
             throw std::out_of_range(
-    "Error: "+ operation + " " + a + " and " + b
-    + " will cause coin number overflow");
+    "Error: "+ operation + " will cause coin number overflow");
 }
 
 Moneybag::operator bool() const {
@@ -38,6 +30,7 @@ std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
                   << " soliduses, " << mb.denier << " deniers)";
 }
 
+// TODO Change to operator<=>
 bool operator==(const Moneybag &a, const Moneybag &b) {
     return a.livre == b.livre && a.solidus == b.solidus && a.denier == b.denier;
 }
@@ -58,48 +51,13 @@ bool operator>(const Moneybag &a, const Moneybag &b) {
     return a >= b && !(a == b);
 }
 
-// TODO: mozna lepszy komunikat bledu - wypisac ktore dodanie nie dziala
-Moneybag operator+(const Moneybag &a, const Moneybag &b) {
-    if (COIN_NUMBER_MAX - a.livre < b.livre ||
-        COIN_NUMBER_MAX - a.solidus < b.solidus ||
-        COIN_NUMBER_MAX - a.denier < b.denier) {
-        errorReport("addition", printMoneybag(a), printMoneybag(b));
-    }
-
-    return Moneybag(a.livre + b.livre, a.solidus + b.solidus,
-                    a.denier + b.denier);
-}
-
-Moneybag operator-(const Moneybag &a, const Moneybag &b) {
-    if (a.livre < b.livre || a.solidus < b.solidus || a.denier < b.denier) {
-        errorReport("subtraction", printMoneybag(a), printMoneybag(b));
-    }
-
-    return Moneybag(a.livre - b.livre, a.solidus - b.solidus,
-                    a.denier - b.denier);
-}
-
-Moneybag operator*(const Moneybag &mb, coin_number_t scalar) {
-    if (COIN_NUMBER_MAX / scalar < mb.livre ||
-        COIN_NUMBER_MAX / scalar < mb.solidus ||
-        COIN_NUMBER_MAX / scalar < mb.denier) {
-        errorReport("multiplication", printMoneybag(mb), std::to_string(scalar));
-    }
-
-    return Moneybag(mb.livre * scalar, mb.solidus * scalar, mb.denier * scalar);
-}
-
-Moneybag operator*(coin_number_t scalar, const Moneybag &mb) {
-    return mb * scalar;
-}
-
 // TODO: uzywanie move, nie wiem czy tak jest wydajenie
 
 Moneybag &operator+=(Moneybag &a, const Moneybag &b) {
     if (COIN_NUMBER_MAX - a.livre < b.livre ||
         COIN_NUMBER_MAX - a.solidus < b.solidus ||
         COIN_NUMBER_MAX - a.denier < b.denier) {
-        errorReport("addition", printMoneybag(a), printMoneybag(b));
+        errorReport("addition");
     }
 
     a.livre += b.livre;
@@ -109,7 +67,41 @@ Moneybag &operator+=(Moneybag &a, const Moneybag &b) {
     return a;
 }
 
+Moneybag operator+(const Moneybag &a, const Moneybag &b) {
+    Moneybag mb = a;
+    mb += b;
 
+    return mb;
+}
+
+Moneybag operator-(const Moneybag &a, const Moneybag &b) {
+    if (a.livre < b.livre || a.solidus < b.solidus || a.denier < b.denier) {
+        errorReport("subtraction");
+    }
+
+    return Moneybag(a.livre - b.livre, a.solidus - b.solidus,
+                    a.denier - b.denier);
+}
+
+
+// TODO use function *= ???
+Moneybag operator*(const Moneybag &mb, const coin_number_t scalar) {
+    if (COIN_NUMBER_MAX / scalar < mb.livre ||
+        COIN_NUMBER_MAX / scalar < mb.solidus ||
+        COIN_NUMBER_MAX / scalar < mb.denier) {
+        errorReport("multiplication");
+    }
+
+    return Moneybag(mb.livre * scalar, mb.solidus * scalar, mb.denier * scalar);
+}
+
+// TODO use function *=
+Moneybag operator*(const coin_number_t scalar, const Moneybag &mb) {
+    return mb * scalar;
+}
+
+
+// TODO change
 void Value::normalize() {
     // TODO: magiczne stale
     coin_number_t denier_to_solidus = denier / 12;
