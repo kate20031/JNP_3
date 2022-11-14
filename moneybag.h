@@ -5,17 +5,17 @@
 
 class Moneybag {
 
-  public:
+public:
     using coin_number_t = unsigned long;
 
     // constructors
     explicit constexpr Moneybag(const coin_number_t liv,
                                 const coin_number_t sol,
                                 const coin_number_t den)
-        : livre(liv), solidus(sol), denier(den) {}
+            : livre(liv), solidus(sol), denier(den) {}
 
     Moneybag(const class Moneybag &mb)
-        : livre(mb.livre), solidus(mb.solidus), denier(mb.denier) {}
+            : livre(mb.livre), solidus(mb.solidus), denier(mb.denier) {}
 
     // methods
 
@@ -53,7 +53,7 @@ class Moneybag {
 
     friend Moneybag &operator+=(Moneybag &a, const Moneybag &b);
 
-  private:
+private:
     coin_number_t livre, solidus, denier;
 };
 
@@ -63,14 +63,14 @@ constexpr Moneybag Denier(0, 0, 1);
 
 class Value {
 
-  public:
+public:
     using coin_number_t = Moneybag::coin_number_t;
 
     Value() : livre(0), solidus(0), denier(0) {}
 
     Value(const Moneybag &mb)
-        : livre(mb.livre_number()), solidus(mb.solidus_number()),
-          denier(mb.denier_number()) {
+            : livre(mb.livre_number()), solidus(mb.solidus_number()),
+              denier(mb.denier_number()) {
         normalize();
     }
 
@@ -79,11 +79,11 @@ class Value {
     }
 
     Value(const class Value &v)
-        : livre(v.livre), solidus(v.solidus), denier(v.denier) {}
+            : livre(v.livre), solidus(v.solidus), denier(v.denier) {}
 
     auto operator<=>(const Value &) const = default;
 
-  private:
+private:
     coin_number_t livre, solidus, denier;
 
     void normalize();
