@@ -68,10 +68,7 @@ Moneybag &operator+=(Moneybag &a, const Moneybag &b) {
 }
 
 Moneybag operator+(const Moneybag &a, const Moneybag &b) {
-    Moneybag mb = a;
-    mb += b;
-
-    return mb;
+    return (Moneybag mb(a)) += b;
 }
 
 Moneybag operator-(const Moneybag &a, const Moneybag &b) {
