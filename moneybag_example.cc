@@ -44,18 +44,17 @@ int main() {
 
     Value v1 = Value(m1);
     Value v2(m2);
-    //
-    //    cout << static_cast<string>(v1) << endl;
-    //    cout << string(Value(Livre)) << endl;
-    //
 
-       assert(v1 == v2);
-       assert(!is_neq(v1 <=> v2));
-       assert(v1 == 379);
-       assert(379 == v2);
-       assert(v1 > 350);
-       assert(350 < v2);
-       assert(0 == Value());
+    cout << static_cast<string>(v1) << endl;
+    cout << string(Value(Livre)) << endl;
+
+    assert(v1 == v2);
+    assert(!is_neq(v1 <=> v2));
+    assert(v1 == 379);
+    assert(379 == v2);
+    assert(v1 > 350);
+    assert(350 < v2);
+    assert(0 == Value());
 
     // Te konstrukcje nie powinny się kompilować.
     // Livre = Denier;
