@@ -1,8 +1,8 @@
 .vscode
 CMakeFiles
 CMakeCache.txt
-moneybag_example.cc
-*.txt
+moneybag_tresc.txt
+moneybag_kryteria.txt
 *.o
 rational.cc
-example
+jnp3
