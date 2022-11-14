@@ -106,11 +106,10 @@ public:
         return mb2 *= scalar;
     }
 
-    inline std::ostream &operator<<(std::ostream &stream) {
-        return stream << "(" << this->livre << " livres, " << this->solidus
-                      << " soliduses, " << this->denier << " deniers)";
+    friend std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
+        return stream << "(" << mb.livre_number() << " livres, " << mb.solidus_number()
+                      << " soliduses, " << mb.denier_number() << " deniers)";
     }
-    friend std::ostream &operator<<(std::ostream &stream, const Moneybag &mb);
 
 private:
     coin_number_t livre, solidus, denier;
