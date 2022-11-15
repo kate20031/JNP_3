@@ -8,19 +8,24 @@ class Moneybag {
 
 public:
     using coin_number_t = unsigned long;
-    static constexpr coin_number_t COIN_NUMBER_MAX = UINT64_MAX;
 
-
+    // constructors
     explicit constexpr Moneybag(const coin_number_t liv,
                                 const coin_number_t sol,
                                 const coin_number_t den)
             : livre(liv), solidus(sol), denier(den) {}
 
+    Moneybag(const class Moneybag &mb)
+            : livre(mb.livre), solidus(mb.solidus), denier(mb.denier) {}
+
+    // methods
+
+
     [[nodiscard]] constexpr coin_number_t livre_number() const {
         return livre;
     }
 
-    [[nodiscard]] constexpr coin_number_t solidus_number() const {
+    constexpr coin_number_t solidus_number() const {
         return solidus;
     }
 
@@ -28,97 +33,62 @@ public:
         return denier;
     }
 
-    constexpr inline operator bool() const {
+    friend std::ostream &operator<<(std::ostream &stream, const Moneybag &lhs);
+
+    // operators
+
+    explicit operator bool() const {
         return livre > 0 || solidus > 0 || denier > 0;
     }
 
-    constexpr auto operator<=>(Moneybag const& b) {
-        if (this->livre == b.livre && this->solidus == b.solidus && this->denier == b.denier) {
+    constexpr inline bool operator==(Moneybag const& b) const {
+        return this->livre == b.livre && this->solidus == b.solidus && this->denier == b.denier;
+    }
+
+    constexpr inline auto operator<=>(Moneybag const& b) {
+        if ((*this) == b) {
             return std::partial_ordering::equivalent;
         }
-        if (this->livre < b.livre && this->solidus < b.solidus && this->denier < b.denier) {
+        if ((this->livre <= b.livre && this->solidus <= b.solidus && this->denier <= b.denier)
+            && !((*this) == b)) {
             return std::partial_ordering::less;
         }
-        if (this->livre > b.livre && this->solidus > b.solidus && this->denier > b.denier)  {
+        if (this->livre >= b.livre && this->solidus >= b.solidus && this->denier >= b.denier
+            && !((*this) == b))  {
             return std::partial_ordering::greater;
         }
 
         return std::partial_ordering::unordered;
     }
 
-    constexpr inline Moneybag & operator+=(const Moneybag &mb) {
-        if (COIN_NUMBER_MAX - this->livre < mb.livre_number() ||
-            COIN_NUMBER_MAX - this->solidus < mb.solidus_number() ||
-            COIN_NUMBER_MAX - this->denier < mb.denier_number()) {
-            throw std::out_of_range(
-                    "Error: addition will cause coin number overflow");
-        }
+    friend Moneybag operator*(const Moneybag &mb,
+                              Moneybag::coin_number_t scalar);
 
-        this->livre += mb.livre_number();
-        this->solidus += mb.solidus_number();
-        this->denier += mb.denier_number();
+    friend Moneybag operator*(Moneybag::coin_number_t scalar,
+                              const Moneybag &mb);
 
-        return *this;
-    }
+    friend Moneybag operator+(const Moneybag &a, const Moneybag &b);
 
-    constexpr inline Moneybag & operator+(const Moneybag &mb) {
-        return (*this) += mb;
-    }
+    friend Moneybag operator-(const Moneybag &a, const Moneybag &b);
 
-    constexpr inline Moneybag & operator-=(const Moneybag &mb) {
-        if (this->livre < this->livre || this->solidus < this->solidus || this->denier < this->denier) {
-            throw std::out_of_range(
-                    "Error: subtraction will cause coin number overflow");
-        }
+    friend Moneybag &operator-=(Moneybag &a, const Moneybag &b);
 
-        this->livre -= mb.livre_number();
-        this->solidus -= mb.solidus_number();
-        this->denier -= mb.denier_number();
+    friend Moneybag &operator+=(Moneybag &a, const Moneybag &b);
 
-        return *this;
-    }
-
-    constexpr inline Moneybag &operator-(const Moneybag &mb) {
-        return (*this) -= mb;
-    }
-
-    constexpr inline Moneybag &operator*=(coin_number_t scalar) {
-        if (scalar != 0 && (COIN_NUMBER_MAX / scalar < this->livre ||
-            COIN_NUMBER_MAX / scalar < this->solidus ||
-            COIN_NUMBER_MAX / scalar < this->denier)) {
-            throw std::out_of_range(
-                    "Error: multiplication will cause coin number overflow");
-        }
-
-        this->livre *= scalar;
-        this->solidus *= scalar;
-        this->denier *= scalar;
-
-        return (*this);
-    }
-
-    constexpr inline Moneybag operator*(const coin_number_t scalar) {
-        return (*this) *= scalar;
-    }
-
-    friend Moneybag operator*(const coin_number_t scalar, const Moneybag &mb) {
-        Moneybag mb2 = mb;
-        return mb2 *= scalar;
-    }
-
-    friend std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
-        return stream << "(" << mb.livre_number() << " livres, " << mb.solidus_number()
-                      << " soliduses, " << mb.denier_number() << " deniers)";
-    }
+    friend Moneybag &operator*=(Moneybag &mb, const coin_number_t scalar);
 
 private:
     coin_number_t livre, solidus, denier;
-
 };
 
-constinit const Moneybag Livre(1, 0, 0);
-constinit const Moneybag Solidus(0, 1, 0);
-constinit const Moneybag Denier(0, 0, 1);
+inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
+    return stream << "(" << mb.livre << " livres, " << mb.solidus
+                  << " soliduses, " << mb.denier << " deniers)";
+}
+
+constexpr Moneybag Livre(1, 0, 0);
+constexpr Moneybag Solidus(0, 1, 0);
+constexpr Moneybag Denier(0, 0, 1);
 
 class Value {
 public:
