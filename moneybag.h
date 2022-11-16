@@ -137,8 +137,9 @@ constinit const Moneybag Denier(0, 0, 1);
 class Value {
 public:
     Value(const Moneybag &mb)
-        : value(240 * mb.livre_number() + 12 * mb.solidus_number() +
-                mb.denier_number()){};
+        : value(240 * static_cast<__int128>(mb.livre_number()) +
+                12 * static_cast<__int128>(mb.solidus_number()) +
+                static_cast<__int128>(mb.denier_number())){};
 
     Value(Moneybag::coin_number_t denier_number = 0) : value(denier_number){};
 
@@ -147,7 +148,7 @@ public:
         __int128 copy = value;
         while (copy > 0) {
             ret += copy % 10 + '0';
-            copy /= 10;
+            copy /= static_cast<__int128>(10);
         }
 
         std::reverse(ret.begin(), ret.end());
@@ -156,10 +157,6 @@ public:
             ret = "0";
         }
         return ret;
-    }
-
-    constexpr bool operator==(const Value &rhs) const {
-        return value == rhs.value;
     }
 
     constexpr auto operator<=>(const Value &rhs) const = default;
