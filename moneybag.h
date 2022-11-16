@@ -117,8 +117,7 @@ private:
 
 constexpr Moneybag operator*(const Moneybag::coin_number_t scalar,
                              const Moneybag &mb) {
-    Moneybag mb2 = mb;
-    return mb2 *= scalar;
+    return Moneybag(mb) *= scalar;
 }
 
 inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
