@@ -15,19 +15,19 @@ class Moneybag {
                                     const coin_number_t den)
                 : livre(liv), solidus(sol), denier(den) {}
 
-        [[nodiscard]] constexpr coin_number_t livre_number() const {
+        [[nodiscard]] constexpr inline coin_number_t livre_number() const {
             return livre;
         }
 
-        [[nodiscard]] constexpr coin_number_t solidus_number() const {
+        [[nodiscard]] constexpr inline coin_number_t solidus_number() const {
             return solidus;
         }
 
-        [[nodiscard]] constexpr coin_number_t denier_number() const {
+        [[nodiscard]] constexpr inline coin_number_t denier_number() const {
             return denier;
         }
 
-        static void errorReport(const std::string &operation) {
+        static void inline errorReport(const std::string &operation) {
             throw std::out_of_range(
                     "Error: "+ operation + " will cause coin number overflow");
         }
@@ -36,11 +36,11 @@ class Moneybag {
             return livre > 0 || solidus > 0 || denier > 0;
         }
 
-        constexpr inline bool operator==(Moneybag const &b) const {
+        constexpr bool operator==(Moneybag const &b) const {
             return this->livre == b.livre && this->solidus == b.solidus && this->denier == b.denier;
         }
 
-        constexpr inline auto operator<=>(Moneybag const &b) {
+        constexpr auto operator<=>(Moneybag const &b) {
             if ((*this) == b) {
                 return std::partial_ordering::equivalent;
             }
@@ -123,8 +123,6 @@ constexpr Moneybag operator*(const Moneybag::coin_number_t scalar, const Moneyba
     Moneybag mb2 = mb;
     return mb2 *= scalar;
 }
-
-inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb);
 
 inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
     std::string livrStr = (mb.livre_number() == 1) ? " livr, " : " livres, ";
