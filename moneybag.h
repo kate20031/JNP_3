@@ -82,9 +82,9 @@ class Moneybag {
                 errorReport("subtraction");
             }
 
-            this->livre += b.livre;
-            this->solidus += b.solidus;
-            this->denier += b.denier;
+            this->livre -= b.livre;
+            this->solidus -= b.solidus;
+            this->denier -= b.denier;
 
             return (*this);
         }
@@ -127,8 +127,12 @@ constexpr Moneybag operator*(const Moneybag::coin_number_t scalar, const Moneyba
 inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb);
 
 inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
-    return stream << "(" << mb.livre_number() << " livres, " << mb.solidus_number()
-                  << " soliduses, " << mb.denier_number() << " deniers)";
+    std::string livrStr = (mb.livre_number() == 1) ? " livr, " : " livres, ";
+    std::string solStr = (mb.solidus_number() == 1) ? " solidus, " : " soliduses, ";
+    std::string denStr = (mb.denier_number() == 1) ? " denier)" : " deniers)";
+
+    return stream << "(" << mb.livre_number() << livrStr << mb.solidus_number()
+                  << solStr << mb.denier_number() << denStr;
 }
 
 constexpr Moneybag Livre(1, 0, 0);
@@ -151,6 +155,10 @@ class Value {
             }
 
             std::reverse(ret.begin(), ret.end());
+
+            if (ret == "") {
+                ret = "0";
+            }
             return ret;
         }
 
