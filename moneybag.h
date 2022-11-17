@@ -68,10 +68,7 @@ public:
     }
 
     constexpr Moneybag operator+(const Moneybag &b) {
-        Moneybag mb = (*this);
-        mb += b;
-
-        return mb;
+        return Moneybag(*this) += b;
     }
 
     constexpr Moneybag &operator-=(const Moneybag &b) {
@@ -88,10 +85,7 @@ public:
     }
 
     constexpr Moneybag operator-(const Moneybag &b) {
-        Moneybag mb = (*this);
-        mb -= b;
-
-        return mb;
+        return Moneybag(*this) -= b;
     }
 
     constexpr Moneybag &operator*=(const coin_number_t scalar) {
@@ -109,8 +103,7 @@ public:
     }
 
     constexpr Moneybag operator*(const coin_number_t scalar) {
-        Moneybag mb2 = (*this);
-        return mb2 *= scalar;
+        return Moneybag(*this) *= scalar;
     }
 
 private:
@@ -149,7 +142,8 @@ public:
         : value(240 * mb.livre_number() + 12 * mb.solidus_number() +
                 mb.denier_number()){};
 
-    constexpr Value(Moneybag::coin_number_t denier_number = 0) : value(denier_number){};
+    constexpr Value(Moneybag::coin_number_t denier_number = 0)
+        : value(denier_number){};
 
     explicit operator std::string() const {
         std::string ret;
