@@ -126,10 +126,10 @@ inline std::ostream &operator<<(std::ostream &stream, const Moneybag &mb) {
     std::string livrStr = (mb.livre_number() == 1) ? " livr, " : " livres, ";
     std::string solStr =
         (mb.solidus_number() == 1) ? " solidus, " : " soliduses, ";
-    std::string denStr = (mb.denier_number() == 1) ? " denier)" : " deniers)";
+    std::string denStr = (mb.denier_number() == 1) ? " denier" : " deniers";
 
     return stream << "(" << mb.livre_number() << livrStr << mb.solidus_number()
-                  << solStr << mb.denier_number() << denStr;
+                  << solStr << mb.denier_number() << denStr << ")";
 }
 
 constinit const Moneybag Livre(1, 0, 0);
