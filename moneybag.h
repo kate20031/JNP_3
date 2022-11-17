@@ -8,8 +8,7 @@
 class Moneybag {
 
 public:
-    using coin_number_t = unsigned long;
-    static constexpr coin_number_t COIN_NUMBER_MAX = UINT64_MAX;
+    using coin_number_t = uint64_t;
 
     explicit constexpr Moneybag(const coin_number_t liv,
                                 const coin_number_t sol,
@@ -121,6 +120,7 @@ public:
 
 private:
     coin_number_t livre, solidus, denier;
+    static constexpr coin_number_t COIN_NUMBER_MAX = UINT64_MAX;
 };
 
 constexpr Moneybag operator*(const Moneybag::coin_number_t scalar,
