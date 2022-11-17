@@ -36,7 +36,7 @@ public:
                this->denier == b.denier;
     }
 
-    constexpr auto operator<=>(Moneybag const &b) {
+    constexpr auto operator<=>(Moneybag const &b) const {
         if ((*this) == b) {
             return std::partial_ordering::equivalent;
         }
@@ -67,7 +67,7 @@ public:
         return (*this);
     }
 
-    constexpr Moneybag operator+(const Moneybag &b) {
+    constexpr Moneybag operator+(const Moneybag &b) const {
         return Moneybag(*this) += b;
     }
 
@@ -84,7 +84,7 @@ public:
         return (*this);
     }
 
-    constexpr Moneybag operator-(const Moneybag &b) {
+    constexpr Moneybag operator-(const Moneybag &b) const {
         return Moneybag(*this) -= b;
     }
 
@@ -102,7 +102,7 @@ public:
         return (*this);
     }
 
-    constexpr Moneybag operator*(const coin_number_t scalar) {
+    constexpr Moneybag operator*(const coin_number_t scalar) const {
         return Moneybag(*this) *= scalar;
     }
 
@@ -149,7 +149,7 @@ public:
         std::string ret;
         __int128 copy = value;
         while (copy > 0) {
-            ret += copy % 10 + '0';
+            ret += static_cast<int>(copy % 10) + '0';
             copy /= 10;
         }
 
