@@ -30,12 +30,12 @@ public:
         return livre > 0 || solidus > 0 || denier > 0;
     }
 
-    bool operator==(Moneybag const &b) const {
+    constexpr bool operator==(Moneybag const &b) const {
         return this->livre == b.livre && this->solidus == b.solidus &&
                this->denier == b.denier;
     }
 
-    auto operator<=>(Moneybag const &b) const {
+    constexpr auto operator<=>(Moneybag const &b) const {
         if ((*this) == b) {
             return std::partial_ordering::equivalent;
         }
@@ -108,7 +108,7 @@ private:
     coin_number_t livre, solidus, denier;
     static constexpr coin_number_t COIN_NUMBER_MAX = UINT64_MAX;
 
-    inline void errorReport(const std::string &operation) {
+    void errorReport(const std::string &operation) {
         throw std::out_of_range("Error: " + operation +
                                 " will cause coin number overflow");
     }
